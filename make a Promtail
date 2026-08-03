@@ -1,0 +1,8 @@
+winget install Helm.Helm   
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+kubectl create namespace monitoring
+kubectl port-forward -n istio-system svc/loki 3100:3100
+helm install promtail grafana/promtail   --namespace monitoring   --set config.clients[0].url=http://loki.istio-system.svc.cluster.local:3100/loki/api/v1/push
+kubectl get pods -n monitoring
+kubectl logs -n monitoring daemonset/promtail
